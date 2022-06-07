@@ -44,15 +44,14 @@ class orderController extends Controller
             'surname' => 'required',
             'phoneNumber' => 'required',
         ]);
-        // if($request->setNewAddress){
-        //     $validatedNew = $request->validate([
-        //         'newAddress.address' => 'required',
-        //         'newAddress.city' => 'required',
-        //         'newAddress.country' => 'required',
-        //         'newAddress.name' => 'required',
-        //         'newAddress.surname' => 'required',
-        //     ]);
-        // }
+        if($request->setNewAddress){
+            $validatedNew = $request->validate([
+                'newAddress.address' => 'required',
+                'newAddress.city' => 'required',
+                'newAddress.country' => 'required',
+                'newAddress.postCode' => 'required',
+            ]);
+        }
         $orderCode = Str::random(12);
         order::create([
             'name'=>$request->name,
