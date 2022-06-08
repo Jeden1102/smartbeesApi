@@ -4,7 +4,12 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\order;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
+use Illuminate\Support\Facades\Mail;
+use App\Mail\orderConfirmation;
+use Illuminate\Support\Facades\App;
+use Throwable;
 
 class orderController extends Controller
 {
@@ -62,9 +67,28 @@ class orderController extends Controller
             'postCode' => $request->postCode,
             'city' => $request->city,
             'phoneNumber'=> $request->phoneNumber,
-            'price'=>120
+            'price'=>$request->cena,
+            'username'=>$request->newAccount ? $request->username : null,
+            'password'=>$request->newAccount ? Hash::make($request->password):null,
+            'delivery_country'=>$request->setNewAddress ? $request->newAddress['country'] : null,
+            'delivery_address'=>$request->setNewAddress ? $request->newAddress['address']:null,
+            'delivery_postCode'=>$request->setNewAddress ? $request->newAddress['postCode']:null,
+            'delivery_city'=>$request->setNewAddress ? $request->newAddress['city']:null,
+            'delivery_method'=>$request->delivery,
+            'payment_method'=>$request->payment,
+            'promo_code'=>$request->code,
+            'comment'=>$request->comment,
         ]);
-        return $orderCode;
+        //email
+        $details = $request;
+        $details['order_code'] = $orderCode;
+        if(config('mail.mailers.smtp.password')!='' && config('mail.mailers.smtp.password') != null){
+            Mail::to($request->email)->send(new orderConfirmation($details));
+            $details['mail_send']=true;
+        }else{
+            $details['mail_send']=false;
+        }
+        return $details;
     }
 
     /**
