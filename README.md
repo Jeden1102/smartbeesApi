@@ -14,7 +14,7 @@ php artisan migrate
 php artisan db:seed
 php artisan serve
 ```
-Nazwę plik
+Domyślne kody rabatowe : V4L1D -> kod działający, -20% od ceny, B4D <- kod nieważny 
 See me live !
 https://dominikraducki.works/smartbees/
 
